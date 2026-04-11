@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "banking-operations"
+version = "0.1.0"
+description = ""
+authors = ["Denys <nikeenko89@gmail.com>"]
+
+# Указываем, что пакет находится в папке src
+packages = [
+    { include = "banking_operations", from = "src" }
+]
+
+[tool.poetry.group.dev.dependencies]
+python = ">=3.14"
+
+# Здесь можно добавить dev-зависимости, например:
+# pytest = "^7.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
