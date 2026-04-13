@@ -1,22 +1,39 @@
-from datetime import datetime
-
-def main_page(date_time_str: str):
-    try:
-        dt = datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S")
-
-        return {
-            "date": dt.date().isoformat(),
-            "time": dt.time().isoformat()
-        }
-
-    except ValueError:
-        return "Ошибка: неверный формат даты. Используй YYYY-MM-DD HH:MM:SS"
+from utils import build_main_response, process_events
 
 
-# --- пример запуска ---
-if __name__ == "__main__":
-    user_input = input("Введите дату и время: ")
+# =========================
+# 🏠 ГЛАВНАЯ СТРАНИЦА
+# =========================
+def main_page(date_time: str) -> dict:
+    """
+    Главная страница приложения.
 
-    result = main_page(user_input)
+    Принимает дату и время пользователя и формирует основной ответ
+    через функцию build_main_response из модуля utils.
 
-    print(result)
+    Args:
+        date_time (str): дата и время в строковом формате (YYYY-MM-DD HH:MM:SS)
+
+    Returns:
+        str: JSON-строка с ответом главной страницы
+    """
+    return build_main_response(date_time)
+
+
+# =========================
+# 📅 СТРАНИЦА СОБЫТИЙ
+# =========================
+def events_page(df) -> str:
+    """
+    Страница событий.
+
+    Обрабатывает входной DataFrame с событиями и формирует ответ
+    через функцию process_events из модуля utils.
+
+    Args:
+        df (pd.DataFrame): DataFrame с событиями
+
+    Returns:
+        str: JSON-строка с результатом обработки событий
+    """
+    return process_events(df)
