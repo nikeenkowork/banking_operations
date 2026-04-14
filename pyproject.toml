@@ -4,27 +4,22 @@ version = "0.1.0"
 description = ""
 authors = ["Denys <nikeenko89@gmail.com>"]
 
-# Указываем, что пакет находится в папке src
 packages = [
     { include = "banking_operations", from = "src" }
 ]
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.14"
-
-# Здесь можно добавить dev-зависимости, например:
-# pytest = "^7.0"
 pandas = "^3.0.2"
 requests = "^2.33.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^9.0.3"
+flake8 = "^7.3.0"
+mypy = "^1.20.0"
+isort = "^8.0.1"
+black = "^26.3.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[dependency-groups]
-dev = [
-    "flake8 (>=7.3.0,<8.0.0)",
-    "mypy (>=1.20.0,<2.0.0)",
-    "isort (>=8.0.1,<9.0.0)",
-    "black (>=26.3.1,<27.0.0)"
-]

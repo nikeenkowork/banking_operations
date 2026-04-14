@@ -21,10 +21,7 @@ def main_page(date_time_str: str):
     try:
         dt = datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S")
 
-        return {
-            "date": dt.date().isoformat(),
-            "time": dt.time().isoformat()
-        }
+        return {"date": dt.date().isoformat(), "time": dt.time().isoformat()}
 
     except ValueError:
         return "Ошибка: неверный формат даты. Используй YYYY-MM-DD HH:MM:SS"

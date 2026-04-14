@@ -1,6 +1,7 @@
 import json
 import logging
 from datetime import datetime, timedelta
+
 import pandas as pd
 
 logging.basicConfig(level=logging.INFO)
@@ -32,9 +33,9 @@ def spending_by_category(df: pd.DataFrame, category: str, date_to: str) -> str:
         df["date"] = pd.to_datetime(df["date"])
 
         filtered = df[
-            (df["category"] == category) &
-            (df["date"] >= date_from) &
-            (df["date"] <= date_to_dt)
+            (df["category"] == category)
+            & (df["date"] >= date_from)
+            & (df["date"] <= date_to_dt)
         ]
 
         total = float(filtered["amount"].sum())
@@ -43,7 +44,7 @@ def spending_by_category(df: pd.DataFrame, category: str, date_to: str) -> str:
             "category": category,
             "date_from": date_from.date().isoformat(),
             "date_to": date_to_dt.date().isoformat(),
-            "total_spent": round(total, 2)
+            "total_spent": round(total, 2),
         }
 
         logging.info("Report by category OK")
@@ -53,10 +54,9 @@ def spending_by_category(df: pd.DataFrame, category: str, date_to: str) -> str:
     except Exception as e:
         logging.exception("Error in spending_by_category")
 
-        return json.dumps({
-            "status": "error",
-            "message": str(e)
-        }, ensure_ascii=False, indent=4)
+        return json.dumps(
+            {"status": "error", "message": str(e)}, ensure_ascii=False, indent=4
+        )
 
 
 # =========================
@@ -98,10 +98,9 @@ def spending_by_weekday(df: pd.DataFrame, date_to: str = None) -> str:
     except Exception as e:
         logging.exception("Error in spending_by_weekday")
 
-        return json.dumps({
-            "status": "error",
-            "message": str(e)
-        }, ensure_ascii=False, indent=4)
+        return json.dumps(
+            {"status": "error", "message": str(e)}, ensure_ascii=False, indent=4
+        )
 
 
 # =========================
@@ -133,14 +132,14 @@ def spending_weekday_vs_weekend(df: pd.DataFrame, date_to: str) -> str:
 
         df["is_weekend"] = df["date"].dt.weekday >= 5
 
-        weekday_total = float(df[df["is_weekend"] == False]["amount"].sum())
-        weekend_total = float(df[df["is_weekend"] == True]["amount"].sum())
+        weekday_total = float(df[~df["is_weekend"]]["amount"].sum())
+        weekend_total = float(df[df["is_weekend"]]["amount"].sum())
 
         result = {
             "date_from": date_from.date().isoformat(),
             "date_to": date_to_dt.date().isoformat(),
             "weekday_total": round(weekday_total, 2),
-            "weekend_total": round(weekend_total, 2)
+            "weekend_total": round(weekend_total, 2),
         }
 
         logging.info("Report weekday vs weekend OK")
@@ -150,7 +149,6 @@ def spending_weekday_vs_weekend(df: pd.DataFrame, date_to: str) -> str:
     except Exception as e:
         logging.exception("Error in spending_weekday_vs_weekend")
 
-        return json.dumps({
-            "status": "error",
-            "message": str(e)
-        }, ensure_ascii=False, indent=4)
+        return json.dumps(
+            {"status": "error", "message": str(e)}, ensure_ascii=False, indent=4
+        )

@@ -1,4 +1,4 @@
-from utils import build_main_response, process_events
+from banking_operations.utils import build_main_response, process_events
 
 
 # =========================

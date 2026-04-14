@@ -1,7 +1,9 @@
+import json
 import logging
 import math
+import re
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 logging.basicConfig(level=logging.INFO)
 
@@ -10,10 +12,9 @@ logging.basicConfig(level=logging.INFO)
 # Сервис: Выгодные категории кешбэка
 # =========================
 
+
 def find_cashback_categories(
-    year: int,
-    month: int,
-    transactions: List[Dict[str, Any]]
+    year: int, month: int, transactions: List[Dict[str, Any]]
 ) -> str:
     """
     Формирует отчёт по кешбэку (расходам по категориям) за указанный месяц и год.
@@ -55,19 +56,14 @@ def find_cashback_categories(
 
             result[category] = result.get(category, 0) + amount
 
-        sorted_categories = sorted(
-            result.items(),
-            key=lambda x: x[1],
-            reverse=True
-        )
+        sorted_categories = sorted(result.items(), key=lambda x: x[1], reverse=True)
 
         response = {
             "year": year,
             "month": month,
             "categories": [
-                {"category": c, "total_spent": t}
-                for c, t in sorted_categories
-            ]
+                {"category": c, "total_spent": t} for c, t in sorted_categories
+            ],
         }
 
         logging.info("Cashback OK")
@@ -82,10 +78,9 @@ def find_cashback_categories(
 # Сервис: Инвесткопилка
 # =========================
 
+
 def investment_piggy_bank(
-    month: int,
-    transactions: List[Dict[str, Any]],
-    round_limit: int
+    month: int, transactions: List[Dict[str, Any]], round_limit: int
 ) -> str:
     """
     Сервис накоплений (инвесткопилка).
@@ -131,18 +126,20 @@ def investment_piggy_bank(
 
                 total_saved += saved
 
-                detailed.append({
-                    "date": t["date"],
-                    "expense": amount,
-                    "rounded": rounded,
-                    "saved": saved
-                })
+                detailed.append(
+                    {
+                        "date": t["date"],
+                        "expense": amount,
+                        "rounded": rounded,
+                        "saved": saved,
+                    }
+                )
 
         response = {
             "month": month,
             "round_limit": round_limit,
             "total_saved": round(total_saved, 2),
-            "details": detailed
+            "details": detailed,
         }
 
         logging.info("Piggy OK")
@@ -157,10 +154,8 @@ def investment_piggy_bank(
 # Сервис: Простой поиск
 # =========================
 
-def simple_search(
-    query: str,
-    transactions: List[Dict[str, Any]]
-) -> str:
+
+def simple_search(query: str, transactions: List[Dict[str, Any]]) -> str:
     """
     Простой текстовый поиск по транзакциям.
 
@@ -181,20 +176,18 @@ def simple_search(
         results = []
 
         for t in transactions:
-            text = " ".join([
-                str(t.get("date", "")),
-                str(t.get("category", "")),
-                str(t.get("amount", ""))
-            ]).lower()
+            text = " ".join(
+                [
+                    str(t.get("date", "")),
+                    str(t.get("category", "")),
+                    str(t.get("amount", "")),
+                ]
+            ).lower()
 
             if query_lower in text:
                 results.append(t)
 
-        response = {
-            "query": query,
-            "count": len(results),
-            "results": results
-        }
+        response = {"query": query, "count": len(results), "results": results}
 
         logging.info("Simple search OK")
         return json.dumps(response, ensure_ascii=False, indent=4)
@@ -208,9 +201,8 @@ def simple_search(
 # Сервис: Поиск по телефонным номерам
 # =========================
 
-def phone_search(
-    transactions: List[Dict[str, Any]]
-) -> str:
+
+def phone_search(transactions: List[Dict[str, Any]]) -> str:
     """
     Поиск телефонных номеров в транзакциях.
 
@@ -239,15 +231,9 @@ def phone_search(
             matches = phone_pattern.findall(text)
 
             if matches:
-                results.append({
-                    "transaction": t,
-                    "phones": matches
-                })
+                results.append({"transaction": t, "phones": matches})
 
-        response = {
-            "count": len(results),
-            "results": results
-        }
+        response = {"count": len(results), "results": results}
 
         logging.info("Phone search OK")
         return json.dumps(response, ensure_ascii=False, indent=4)
@@ -260,6 +246,7 @@ def phone_search(
 # =========================
 # Сервис: Переводы физлицам
 # =========================
+
 
 def find_transfers_to_individuals(transactions):
     """
@@ -284,22 +271,17 @@ def find_transfers_to_individuals(transactions):
             if re.search(
                 r"(перевод|payment).*(\b[А-ЯA-Z][а-яa-z]+\s[А-ЯA-Z][а-яa-z]+)",
                 description,
-                re.IGNORECASE
+                re.IGNORECASE,
             ):
                 result.append(tx)
 
-        response = {
-            "status": "success",
-            "count": len(result),
-            "data": result
-        }
+        response = {"status": "success", "count": len(result), "data": result}
 
         return json.dumps(response, ensure_ascii=False, indent=4)
 
     except Exception as e:
         logging.error(f"Search error: {e}")
 
-        return json.dumps({
-            "status": "error",
-            "message": str(e)
-        }, ensure_ascii=False, indent=4)
+        return json.dumps(
+            {"status": "error", "message": str(e)}, ensure_ascii=False, indent=4
+        )

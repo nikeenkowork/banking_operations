@@ -1,6 +1,7 @@
 import json
 import logging
 from datetime import datetime
+
 import pandas as pd
 import requests
 
@@ -10,6 +11,7 @@ logging.basicConfig(level=logging.INFO)
 # =========================
 # 🔹 ОБЩИЕ ФУНКЦИИ
 # =========================
+
 
 def parse_datetime(date_str):
     """
@@ -60,6 +62,7 @@ def get_external_api():
 # 🔹 ГЛАВНАЯ (Excel анализ)
 # =========================
 
+
 def analyze_operations():
     """
     Анализирует Excel-файл operations.xlsx.
@@ -78,7 +81,7 @@ def analyze_operations():
         return {
             "rows_count": len(df),
             "columns": list(df.columns),
-            "data": df.to_dict(orient="records")
+            "data": df.to_dict(orient="records"),
         }
 
     except Exception as e:
@@ -109,7 +112,7 @@ def build_main_response(date_str):
         "year": dt.year if dt else None,
         "month": dt.month if dt else None,
         "operations": analyze_operations(),
-        "api": get_external_api()
+        "api": get_external_api(),
     }
 
     return make_json(result)
@@ -118,6 +121,7 @@ def build_main_response(date_str):
 # =========================
 # 🔹 СОБЫТИЯ (DataFrame)
 # =========================
+
 
 def process_events(df: pd.DataFrame):
     """
@@ -147,7 +151,7 @@ def process_events(df: pd.DataFrame):
         result = {
             "total_events": total_events,
             "latest_event": str(latest),
-            "api": get_external_api()
+            "api": get_external_api(),
         }
 
         return make_json(result)
